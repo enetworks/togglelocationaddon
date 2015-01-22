@@ -43,7 +43,7 @@ $(function(){
 
   function outPutSetting(){
     chrome.storage.sync.get(
-      {tlSetting:[]},
+      {tlSetting:'[]'},
       function(settingData){
         var setting = JSON.parse(settingData.tlSetting);
         if (setting.length === 0){
