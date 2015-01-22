@@ -15,6 +15,7 @@
 *.out
 *.pid
 *.gz
+*.pem
 
 
 # OS or Editor folders
