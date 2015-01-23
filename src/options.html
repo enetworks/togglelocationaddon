@@ -8,10 +8,11 @@
 <body>
   <h1>Toggle Location Setting</h1>
   
-<form action="javascript:void(0);" id="settingForm">
+<form id="settingForm">
   <div>
     <table id="baseTable">
       <tr>
+        <th></th>
         <th>Mode</th>
         <th>From:[Protocol]://[hostname]/</th>
         <th></th>
@@ -26,6 +27,7 @@
 <template id="settingRowTemplate">
 
 <tr class="settingLine">
+  <td class="rowNum"></td>
   <td>
     <select name="toggleMode" class="toggleMode">
       <option value="toggle" class="toggleMode-toggle">1 to 1</option>

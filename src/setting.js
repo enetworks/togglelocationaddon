@@ -2,14 +2,16 @@ $(function(){
 
   function saveSetting(){
     var
-    setting = [],
-    errRow = [];
+    setting       = [],
+    errRow        = [],
+    checkHostname = {},
+    errHost       = [];
     $('.settingLine').each(function(i){
       var
       $t           = $(this),
       fromHost     = $t.find('.fromHostname').val(),
       fromProtocol = $t.find('.fromProtocol').val() === 'https' ? 'https' : 'http',
-      toHost       = $t.find('.toHostname').val(),
+      toHost       = $t.find('.toHostname').eq(0).val(),
       toProtocol   = $t.find('.toProtocol').val() === 'https' ? 'https' : 'http',
       toggleMode   = $t.find('.toggleMode').val() === 'multi' ? 'multi' : 'toggle',
       regHostname  = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/;
@@ -32,36 +34,52 @@ $(function(){
             'toggleMode': toggleMode
           }
         };
+        checkHostname[fromHost] = checkHostname[fromHost] > 0 ? checkHostname[fromHost] + 1 : 1;
         if (toggleMode === 'multi'){
           $t.find('.toMore').each(function(){
             var
             $t       = $(this),
             protocol = $t.find('.toProtocol').val() === 'https' ? 'https' : 'http',
             hostname = $t.find('.toHostname').val();
-            settingRow.toSetting.push({
-              'hostname': hostname,
-              'options':{
-                'protocol': protocol
-              }
-            });
+            if (hostname.match(regHostname)){
+              settingRow.toSetting.push({
+                'hostname': hostname,
+                'options':{
+                  'protocol': protocol
+                }
+              });
+            }
           });
+        }else{
+          checkHostname[toHost]  = checkHostname[toHost] > 0 ? checkHostname[toHost] + 1 : 1;
         }
+        setting.push(settingRow);
       }else{
         errRow.push(i + 1);
       }
-      setting.push(settingRow);
     });
 
-    chrome.storage.sync.set({
-      tlSetting: JSON.stringify(setting)
-    },function(){
-      if (errRow.length > 0){
-        alert('Line:' + errRow + ' is not saved')
-      }else{
-        alert('Save Complete');
+    Object.keys(checkHostname).forEach(function(hostKey,i,array){
+      if (checkHostname[hostKey] > 1){
+        errHost.push(hostKey);
       }
-      return false;
     });
+
+    if (errHost.length > 0){
+      alert('Duplicate host: ' + errHost);
+    }else{
+      chrome.storage.sync.set({
+        tlSetting: JSON.stringify(setting)
+      },function(){
+        if (errRow.length > 0){
+          alert('Line:' + errRow + ' is not saved')
+        }else{
+          alert('Save Complete');
+        }
+      });
+    }
+
+    return false;
   }
 
   function outPutSetting(){
@@ -114,6 +132,7 @@ $(function(){
           $('.settingLine').each(function(){
             hideFirstMultiDelButton($(this));
           });
+          rowNum();
         }
       }
     );
@@ -121,6 +140,12 @@ $(function(){
 
   function hideFirstMultiDelButton($tr){
     $tr.find('.toMore').eq(0).find('.multDelhost').remove();
+  }
+
+  function rowNum(){
+    $('.rowNum').each(function(i){
+      $(this).text(i + 1);
+    });
   }
 
   function useMultiMode($tr){
@@ -159,7 +184,7 @@ $(function(){
 
     $div.after(document.importNode(setNode.content,true));
 
-    hideFirstMultiDelButton($tr)
+    hideFirstMultiDelButton($tr);
 
     return false;
   }
@@ -168,7 +193,8 @@ $(function(){
     var $tr = $(this).parent().parent().parent();
     $(this).parent().remove();
 
-    hideFirstMultiDelButton($tr)
+    hideFirstMultiDelButton($tr);
+    rowNum();
 
     return false;
   }
@@ -177,6 +203,7 @@ $(function(){
     var
     rowTemplate = document.querySelector('#settingRowTemplate');
     document.getElementById('baseTable').appendChild(document.importNode(rowTemplate.content,true));
+    rowNum();
     return false;
   }
 
