@@ -1,18 +1,20 @@
 $(function(){
 
   function saveSetting(){
-    var setting = [];
+    var
+    setting = [],
+    errRow = [];
     $('.settingLine').each(function(i){
       var
-      fromHost    = $(this).find('.fromHostname').val(),
-      fromProtocol = $(this).find('.fromProtocol').val() === 'https' ? 'https' : 'http',
-      toHost      = $(this).find('.toHostname').val(),
-      toProtocol = $(this).find('.toProtocol').val() === 'https' ? 'https' : 'http',
-      toggleMode  = $(this).find('.toggleMode').val() === 'multi' ? 'multi' : 'toggle',
-      regHostname = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/;
+      $t           = $(this),
+      fromHost     = $t.find('.fromHostname').val(),
+      fromProtocol = $t.find('.fromProtocol').val() === 'https' ? 'https' : 'http',
+      toHost       = $t.find('.toHostname').val(),
+      toProtocol   = $t.find('.toProtocol').val() === 'https' ? 'https' : 'http',
+      toggleMode   = $t.find('.toggleMode').val() === 'multi' ? 'multi' : 'toggle',
+      regHostname  = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/;
 
       if (fromHost.match(regHostname) && toHost.match(regHostname)){
-        console.log('OK');
         var settingRow  = {
           fromSetting: {
             hostname: fromHost,
@@ -30,6 +32,22 @@ $(function(){
             'toggleMode': toggleMode
           }
         };
+        if (toggleMode === 'multi'){
+          $t.find('.toMore').each(function(){
+            var
+            $t       = $(this),
+            protocol = $t.find('.toProtocol').val() === 'https' ? 'https' : 'http',
+            hostname = $t.find('.toHostname').val();
+            settingRow.toSetting.push({
+              'hostname': hostname,
+              'options':{
+                'protocol': protocol
+              }
+            });
+          });
+        }
+      }else{
+        errRow.push(i + 1);
       }
       setting.push(settingRow);
     });
@@ -37,7 +55,12 @@ $(function(){
     chrome.storage.sync.set({
       tlSetting: JSON.stringify(setting)
     },function(){
-      $('#saveSetting').val('保存済み');
+      if (errRow.length > 0){
+        alert('Line:' + errRow + ' is not saved')
+      }else{
+        alert('Save Complete');
+      }
+      return false;
     });
   }
 
@@ -48,20 +71,21 @@ $(function(){
         var setting = JSON.parse(settingData.tlSetting);
         if (setting.length === 0){
           var
-          rowTemplate = document.querySelector('#settingRowTemplate');
+          rowTemplate = document.querySelector('#settingRowTemplate').cloneNode(true);
           document.getElementById('baseTable').appendChild(document.importNode(rowTemplate.content,true));
         }else{
           setting.forEach(function(rowSetting,i,array){
             var
-            rowTemplate = document.querySelector('#settingRowTemplate').cloneNode(true);
+            rowTemplate = document.querySelector('#settingRowTemplate').cloneNode(true),
+            toPrimary = rowSetting.toSetting.shift();
 
             rowTemplate.content.querySelector('.fromHostname').value = rowSetting.fromSetting.hostname;
             if (rowSetting.fromSetting.options.protocol === 'https'){
               rowTemplate.content.querySelector('.fromProtocol-https').setAttribute('selected',1);
             }
 
-            rowTemplate.content.querySelector('.toHostname').value = rowSetting.toSetting[0].hostname;
-            if (rowSetting.toSetting[0].options.protocol === 'https'){
+            rowTemplate.content.querySelector('.toHostname').value = toPrimary.hostname;
+            if (toPrimary.options.protocol === 'https'){
               rowTemplate.content.querySelector('.toProtocol-https').setAttribute('selected',1);
             }
 
@@ -69,15 +93,84 @@ $(function(){
             if(rowSetting.options.toggleMode === 'multi'){
               rowTemplate.content.querySelector('.toggleMode-multi').setAttribute('selected',1);
               rowTemplate.content.querySelector('.modeView').innerText = '->';
-            }else{
+              if (rowSetting.toSetting.length === 0){
+                var setNode = document.querySelector('#moreHostTemplate').cloneNode(true);
+                rowTemplate.content.querySelector('.toHostCell').appendChild(document.importNode(setNode.content,true));
+              }else{
+                rowSetting.toSetting.forEach(function(hostSetting,i,array){
+                  var setNode = document.querySelector('#moreHostTemplate').cloneNode(true);
 
+                  setNode.content.querySelector('.toHostname').value = hostSetting.hostname;
+                  if (hostSetting.options.protocol === 'https'){
+                    setNode.content.querySelector('.toProtocol-https').setAttribute('selected',1);
+                  }
+                  rowTemplate.content.querySelector('.toHostCell').appendChild(document.importNode(setNode.content,true));
+                });
+              }
             }
 
             document.getElementById('baseTable').appendChild(document.importNode(rowTemplate.content,true));
           });
+          $('.settingLine').each(function(){
+            hideFirstMultiDelButton($(this));
+          });
         }
       }
     );
+  }
+
+  function hideFirstMultiDelButton($tr){
+    $tr.find('.toMore').eq(0).find('.multDelhost').remove();
+  }
+
+  function useMultiMode($tr){
+    var
+    setNode = document.querySelector('#moreHostTemplate').cloneNode(true);
+
+    $tr.find('.modeView').text('->');
+    $tr.find('.toHostCell').append(document.importNode(setNode.content,true));
+  }
+
+  function exitMultiMode($tr){
+    var
+    setNode = document.querySelector('#moreHostTemplate').cloneNode(true);
+
+    $tr.find('.modeView').text('<->');
+    $tr.find('.toMore').remove();
+  }
+
+  function changeMode(){
+    var 
+    $t = $(this),
+    $tr = $t.parent().parent();
+    if ($t.val() === 'multi'){
+      useMultiMode($tr);
+      hideFirstMultiDelButton($tr)
+    }else{
+      exitMultiMode($tr);
+    }
+  }
+
+  function addMultiHost(){
+    var
+    $div    = $(this).parent(),
+    $tr     = $div.parent().parent(),
+    setNode = document.querySelector('#moreHostTemplate').cloneNode(true);
+
+    $div.after(document.importNode(setNode.content,true));
+
+    hideFirstMultiDelButton($tr)
+
+    return false;
+  }
+
+  function delMultiHost(){
+    var $tr = $(this).parent().parent().parent();
+    $(this).parent().remove();
+
+    hideFirstMultiDelButton($tr)
+
+    return false;
   }
 
   function addSettingRow(){
@@ -87,10 +180,16 @@ $(function(){
     return false;
   }
 
-
-
-  $('#saveSetting').click(saveSetting);
+  $('#settingForm').submit(saveSetting);
   $('#addRule').click(addSettingRow);
+  $('#baseTable')
+    .on('change','.toggleMode',changeMode)
+    .on('click','.multAddhost',addMultiHost)
+    .on('click','.multDelhost',delMultiHost)
+    .on('click','.deleteRule',function(){
+      $(this).parent().parent().remove();
+    });
+
   outPutSetting();
 
 });

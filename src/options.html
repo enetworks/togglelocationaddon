@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Toggle Location</title>
+  <link rel="stylesheet" href="css/options.css">
 </head>
 <body>
   <h1>Toggle Location Setting</h1>
   
+<form action="javascript:void(0);" id="settingForm">
   <div>
     <table id="baseTable">
       <tr>
@@ -17,10 +19,9 @@
     </table>
     <p class="add"><a href="javascript:void(0)" id="addRule">addRule</a></p>
   </div>
+  <p><input type="submit" id="saveSetting" value="Save Settings"></p>
+</form>
 
-
-
-  <p><input type="submit" id="saveSetting" value="保存する"></p>
 
 <template id="settingRowTemplate">
 
@@ -39,7 +40,7 @@
     <input type="text" name="fromHostname1" class="fromHostname settingRow1">/
   </td>
   <td class="modeView">&lt;-&gt;</td>
-  <td>
+  <td class="toHostCell">
     <div class="toPrimary">
       <select name="toProtocol" class="toProtocol">
         <option value="http" class="toProtocol-http">http</option>
@@ -47,6 +48,9 @@
       </select>://
       <input type="text" name="toHostname1" class="toHostname settingRow1">/
     </div>
+  </td>
+  <td>
+    <input type="button" value="Delete Rule" class="deleteRule">
   </td>
 </tr>
 
@@ -59,7 +63,9 @@
     <option value="http">http</option>
     <option value="https">https</option>
   </select>://
-  <input type="text" name="toHostname1" class="toHostname settingRow1">/
+  <input type="text" name="toHostnameMore" class="toHostname settingRowMore">/
+  <input type="button" value="add" class="multAddhost">
+  <input type="button" value="del" class="multDelhost">
 </div>
 
 </template>
