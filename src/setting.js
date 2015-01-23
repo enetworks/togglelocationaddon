@@ -5,7 +5,9 @@ $(function(){
     setting       = [],
     errRow        = [],
     checkHostname = {},
-    errHost       = [];
+    errHost       = [],
+    regHostname   = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/;
+
     $('.settingLine').each(function(i){
       var
       $t           = $(this),
@@ -13,8 +15,7 @@ $(function(){
       fromProtocol = $t.find('.fromProtocol').val() === 'https' ? 'https' : 'http',
       toHost       = $t.find('.toHostname').eq(0).val(),
       toProtocol   = $t.find('.toProtocol').val() === 'https' ? 'https' : 'http',
-      toggleMode   = $t.find('.toggleMode').val() === 'multi' ? 'multi' : 'toggle',
-      regHostname  = /^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/;
+      toggleMode   = $t.find('.toggleMode').val() === 'multi' ? 'multi' : 'toggle';
 
       if (fromHost.match(regHostname) && toHost.match(regHostname)){
         var settingRow  = {
