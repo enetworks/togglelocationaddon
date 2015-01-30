@@ -12,3 +12,15 @@
 .modeView{
   text-align: center;
 }
+
+.fromDirname,
+.toDirname,
+.toDirnameMore{
+  display: none;
+}
+
+.modeDir .fromDirname,
+.modeDir .toDirname,
+.modeDir .toDirnameMore{
+  display: inline;
+}

@@ -14,9 +14,9 @@
       <tr>
         <th></th>
         <th>Mode</th>
-        <th>From:[Protocol]://[hostname]/</th>
+        <th>From:[Protocol]://[hostname]/[Path(option)]</th>
         <th></th>
-        <th>To:[Protocol]://[hostname]/</th>
+        <th>To:[Protocol]://[hostname]/[Path(option)]</th>
     </table>
     <p class="add"><a href="javascript:void(0)" id="addRule">addRule</a></p>
   </div>
@@ -32,6 +32,8 @@
     <select name="toggleMode" class="toggleMode">
       <option value="toggle" class="toggleMode-toggle">1 to 1</option>
       <option value="multi" class="toggleMode-multi">1 to multi</option>
+      <option value="toggleDir" class="toggleMode-toggleDir">1 to 1 [+Path]</option>
+      <option value="multiDir" class="toggleMode-multiDir">1 to multi [+Path]</option>
     </select>
   </td>
   <td>
@@ -39,7 +41,8 @@
       <option value="http" class="fromProtocol-http">http</option>
       <option value="https" class="fromProtocol-https">https</option>
     </select>://
-    <input type="text" name="fromHostname1" class="fromHostname settingRow1">/
+    <input type="text" name="fromHostname" class="fromHostname">/
+    <input type="text" name="fromDirname" class="fromDirname">
   </td>
   <td class="modeView">&lt;-&gt;</td>
   <td class="toHostCell">
@@ -48,7 +51,8 @@
         <option value="http" class="toProtocol-http">http</option>
         <option value="https" class="toProtocol-https">https</option>
       </select>://
-      <input type="text" name="toHostname1" class="toHostname settingRow1">/
+      <input type="text" name="toHostname" class="toHostname">/
+      <input type="text" name="toDirname" class="toDirname">
     </div>
   </td>
   <td>
@@ -66,6 +70,7 @@
     <option value="https">https</option>
   </select>://
   <input type="text" name="toHostnameMore" class="toHostname settingRowMore">/
+  <input type="text" name="toDirnameMore" class="toDirname">
   <input type="button" value="add" class="multAddhost">
   <input type="button" value="del" class="multDelhost">
 </div>
