@@ -1,15 +1,15 @@
 {
   "manifest_version": 2,
-  "name": "Toggle Location",
+  "name": "Toggle Location Dev",
   "options_page": "options.html",
-  "version": "0.2",
+  "version": "0.2.1",
   "description": "change URL",
-  "icons": {"128": "icon.png"},
+  "icons": {"128": "icon_dev_128.png"},
   "permissions": [
   "tabs","storage"
   ],
   "browser_action": {
     "default_popup": "popup.html",
-    "default_icon": "icon.png"
+    "default_icon": "icon_dev_128.png"
   }
 }
