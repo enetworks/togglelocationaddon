@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>togglestg</title>
+
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+
+  <link rel="import" href="bower_components/core-icons/core-icons.html">
+  <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+  <link rel="import" href="bower_components/font-roboto/roboto.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="bower_components/paper-fab/paper-fab.html">
+  <link rel="import" href="bower_components/paper-toast/paper-toast.html">
+  <link rel="import" href="setting-list.html">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body unresolved>
+  <core-toolbar>
+    <span flex>Toggle Location Setting</span>
+  </core-toolbar>
+
+  <section>
+    <p>A simple Polymer
+      <a href="http://www.polymer-project.org/docs/elements/paper-elements.html">
+      paper elements</a> example that demonstrates using <code>&lt;core-toolbar&gt;,
+      &lt;paper-button&gt;, &lt;paper-checkbox&gt;, &lt;paper-icon-button&gt;,
+      &lt;paper-fab&gt;, &lt;paper-tabs&gt;</code>, and <code>&lt;paper-toast&gt;</code>.
+    </p>
+    <paper-checkbox label="Got it!"></paper-checkbox>
+
+  <setting-list></setting-list>
+
+  </section>
+  <section>
+    <template id="toastGroup" is="auto-binding">
+      <paper-button raised right on-click="{{showToast}}">
+        Show Toast
+      </paper-button>
+      <paper-toast id="toast" text="Sample toast here."></paper-toast>
+    </template>
+  </section>
+
+  <script src="main.js"></script>
+</body>
+</html>

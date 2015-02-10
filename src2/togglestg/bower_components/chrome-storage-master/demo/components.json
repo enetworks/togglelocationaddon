@@ -1,0 +1,8 @@
+{
+  "components.html": {
+    "imports": [
+      "chrome-storage"
+    ],
+    "basepath": "../../"
+  }
+}

@@ -1,0 +1,55 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/core-collapse/core-collapse.html">
+<link rel="import" href="bower_components/core-menu/core-menu.html">
+<link rel="import" href="bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/chrome-storage-master/chrome-storage.html">
+
+
+<polymer-element name="setting-list" attributes="show">
+  <template>
+  <chrome-storage id="chromestorage" name="chrome"></chrome-storage>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Mode</th>
+        <th>From:[Protocol]://[hostname]/[Path(option)]</th>
+        <th></th>
+        <th>To:[Protocol]://[hostname]/[Path(option)]</th>
+      </tr>
+    </thead>
+    <tbody>
+    <template repeat="{{setting,settingindex in settings}}">
+      <tr>
+        <td>{{settingindex + 1}}</td>
+        <td>
+          <paper-dropdown-menu label="Mode">
+            <paper-dropdown class="dropdown">
+              <core-menu class="menu">
+                <template repeat="{{modes}}">
+                  <paper-item>{{}}</paper-item>
+                </template>
+              </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </td>
+        <td>
+          <paper-dropdown-menu label="Protocol">
+            <paper-dropdown class="dropdown">
+              <core-menu class="menu">
+                <template repeat="{{protocols}}">
+                  <paper-item>{{}}</paper-item>
+                </template>
+              </core-menu>
+            </paper-dropdown>
+          </paper-dropdown-menu>
+        </td>
+      </tr>
+    </template>
+    </tbody>
+  </table>
+  </template>
+  <script src="setting-list.js"></script>
+</polymer-element>

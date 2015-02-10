@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Toggle Location Dev",
+  "short_name": "togglelocation",
+  "description": "change URL",
+  "version": "0.3.0",
+  "minimum_chrome_version": "38",
+
+  "icons": {
+    "16": "assets/icon_16.png",
+    "128": "assets/icon_128.png"
+  },
+
+  "permissions": [
+  "tabs","storage"
+  ],
+  "options_page": "options.html",
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "assets/icon_128.png"
+  }
+}
